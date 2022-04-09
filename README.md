@@ -1,2 +1,2 @@
 # capstone-backend
-backend of the portifolio
+backend of my portifolio
