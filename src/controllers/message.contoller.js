@@ -1,6 +1,11 @@
 import Message from "../database/model/message";
+import { querryValidation } from "../helpers/validation.schema";
 
 export const saveMessage = async (req, res) => {
+	const { error} =querryValidation(req.body);
+	if(error){
+		return res.status(400).json({message:error.details[0].message});
+	}
     const message = req.body;
     const newMessage = new Message(message);
     await newMessage.save();

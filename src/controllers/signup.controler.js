@@ -47,7 +47,7 @@ export const login = async (req, res)=>{
         const {email, password}=req.body;
         //validate if user exist in our database
     if(!(email&&password)){
-    res.status(400).send("All input is required");
+    res.status(400).send({message:"All input is required"});
     }
     const user=await User.findOne({email});
     if(user && (await bcrypt.compare(password,user.password))){
@@ -63,7 +63,7 @@ export const login = async (req, res)=>{
     user.token=token;
   res.status(200).json(user);  
 }
-res.status(400).send("Invalid credentials");
+res.status(400).send({error:true,message:"Invalid credentials"});
 }catch(err){
     console.log(err);
 }

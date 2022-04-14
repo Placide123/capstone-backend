@@ -5,7 +5,7 @@ title: String,
 author: String,
 description:String,
 photo:String,
-comment:[{
+comments:[{
     name:String,
     comment:String,
 }],

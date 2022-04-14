@@ -1,7 +1,17 @@
 import Subscriber from "../database/model/subscriber";
+import { subscribersValidation } from "../helpers/validation.schema";
 
 export const saveSubscriber = async (req, res) => {
-    const subscriber = req.body;
+	const{ error }=subscribersValidation(req.body);
+	if(error) {
+		return res.status(400).json({message:error.details[0].message});
+	}
+
+	let oldSubscriber= await Subscriber.findOne({Email:req.body.Email})
+	if (oldSubscriber){
+		return res.status(400).json({error:true,message:"You have already Subscriber"});
+	}
+	const subscriber=req.body;
     const newSubscriber = new Subscriber(subscriber);
     await newSubscriber.save();
     res.status(201).json({success: true, data: newSubscriber});
