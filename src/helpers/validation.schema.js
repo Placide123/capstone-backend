@@ -1,4 +1,4 @@
-import Joi from "joi";
+import Joi, { string } from "joi";
 
 export const subscribersValidation=(subscriber1)=>{
     const schema=Joi.object({
@@ -15,4 +15,15 @@ export const querryValidation=(querry)=>{
             message:Joi.string().min(10),
         });
         return schema.validate(querry);
+}
+
+export const blogValidation=(blog)=>{
+    const schema=Joi.object({
+        title:Joi.string().min(6).required(),
+        author:Joi.string().min(6).required(),
+        description:Joi.string().min(6).required(),
+        photo:Joi.string().min(3),
+
+    });
+    return schema.validate(blog);
 }
