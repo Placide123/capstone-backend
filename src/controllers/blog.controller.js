@@ -1,7 +1,12 @@
 import Blog from "../database/model/blog";
 import { fileUpload } from "../helpers/multer";
+import { blogValidation } from "../helpers/validation.schema";
 
 export const saveBlog = async (req, res) => {
+    const{error} =blogValidation(req.body);
+    if(error){
+        return res.status(400).json({message:error.details[0].message})
+    }
 	if (req.file) {
         req.body.photo = await fileUpload(req);
     } 
