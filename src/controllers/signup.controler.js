@@ -1,6 +1,8 @@
 import bcrypt from "bcryptjs/dist/bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../database/model/signup";
+import { signToken} from "../helpers/jwt";
+
 export const Signup = async (req, res)=>{
     try{
         const{firstName,lastName,email,password}=req.body;
@@ -17,23 +19,14 @@ export const Signup = async (req, res)=>{
             email:email.toLowerCase(),
             password:encryptedPassword,
         });
-    console.log(user);
-        const token=jwt.sign(
-            {user_id: user._id,email},
-            process.env.TOKEN_KEY,
-            {
-                expiresIn:"2h",
-            }
-        );
-
-        user.token=token;
-
-        res.status(201).json(user);
+        res.status(200).send({success:true,message:"User Created Successfullys",data:user});
+        
     }catch(err){
-console.log(err);
+    console.log(err);
     }
-
 }
+
+
 
 export const getAllUser = async (req, res) => {
     const users= await User.find();
@@ -49,19 +42,13 @@ export const login = async (req, res)=>{
     if(!(email&&password)){
     res.status(400).send({message:"All input is required"});
     }
+  
     const user=await User.findOne({email});
     if(user && (await bcrypt.compare(password,user.password))){
-    const token=jwt.sign(
-        {user_id: user._id,email},
-        process.env.TOKEN_KEY,
-        {
-            expiresIn:"2h",
-        }
-    );
-    //save user token
-
-    user.token=token;
-  res.status(200).json(user);  
+       // const token=jwt.sign({user_id:user._id,email:email}, process.env.TOKEN_KEY);
+     const token= signToken(email);
+         
+  res.status(200).send({success:true,message:"Logged in Successfullys",token:token});
 }
 res.status(400).send({error:true,message:"Invalid credentials"});
 }catch(err){
@@ -69,6 +56,7 @@ res.status(400).send({error:true,message:"Invalid credentials"});
 }
 
 }
+
 
 
 
