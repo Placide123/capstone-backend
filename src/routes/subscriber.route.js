@@ -1,10 +1,10 @@
 import express from 'express';
-import {deleteSubscriber, getAllSubscriber, saveSubscriber, updateSubscriber} from '../controllers/subscriber.controller'
+import {deleteSubscriber, getAllSubscriber, saveSubscriber} from '../controllers/subscriber.controller'
+import { checkAdminAuth } from '../middleware/check-user';
 const router = express.Router();
-router.post('/save', saveSubscriber);
-router.get('/get', getAllSubscriber);
-router.put('/update/:id', updateSubscriber);
-router.delete('/delete/:id', deleteSubscriber);
+router.post('/', saveSubscriber);
+router.get('/',checkAdminAuth, getAllSubscriber);
+router.delete('/:id',checkAdminAuth, deleteSubscriber);
 
 
 export default router;

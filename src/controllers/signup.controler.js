@@ -1,11 +1,10 @@
 import bcrypt from "bcryptjs/dist/bcrypt";
-import jwt from "jsonwebtoken";
 import User from "../database/model/signup";
 import { signToken} from "../helpers/jwt";
 
 export const Signup = async (req, res)=>{
     try{
-        const{firstName,lastName,email,password}=req.body;
+        const{firstName,lastName,email,role,password}=req.body;
         const oldUser= await User.findOne({email});
         if(oldUser){
             return res.status(409).send("User Already Exist. Please Login");
@@ -17,6 +16,7 @@ export const Signup = async (req, res)=>{
             firstName,
             lastName,
             email:email.toLowerCase(),
+            role,
             password:encryptedPassword,
         });
         res.status(200).send({success:true,message:"User Created Successfullys",data:user});
@@ -39,44 +39,38 @@ export const login = async (req, res)=>{
         //Get user input
         const {email, password}=req.body;
         //validate if user exist in our database
-    if(!(email&&password)){
-    res.status(400).send({message:"All input is required"});
+        if(!(email&&password)){
+        res.status(400).send({message:"All input is required"});
+        }
+        const user=await User.findOne({email});
+    if(user && (await bcrypt.compare(password,user.password))) 
+     {
+     const { _id, firstName, lastName, role } = user;
+     let userdata = {
+         firstName: user.firstName,
+         lastName: user.lastName,
+         email: user.email,
+         role: user.role,
+ 
+     }
+    
+     const token = signToken(JSON.stringify({ _id, firstName, lastName, role, email: user.email }));
+     return res.status(200).json({ success: true, message: "successfully logged in", data: userdata, token })
     }
-  
-    const user=await User.findOne({email});
-    if(user && (await bcrypt.compare(password,user.password))){
-       // const token=jwt.sign({user_id:user._id,email:email}, process.env.TOKEN_KEY);
-     const token= signToken(email);
-         
-  res.status(200).send({success:true,message:"Logged in Successfullys",token:token});
-}
+
 res.status(400).send({error:true,message:"Invalid credentials"});
-}catch(err){
-    console.log(err);
+        }
+    
+    catch(err){
+    console.log(err);}
 }
 
+export const deleteUser=async (req, res) => {
+	try {
+		await User.deleteOne({ _id: req.params.id })
+		res.status(202).json({success: true, data: null})
+	} catch {
+		res.status(404)
+		res.send({ error: "User doesn't exist!" })
+	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

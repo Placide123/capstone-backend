@@ -22,6 +22,11 @@ export const saveBlog = async (req, res) => {
         photo: req.body.photo,
         
     };
+    const{title}=req.body;
+    const oldBlog= await Blog.findOne({title});
+        if(oldBlog){
+            return res.status(409).send("Blog Already Exist. Please change the title");
+        }
 	
 	console.log(blog);
     const newBlog = new Blog(blog);
@@ -50,6 +55,12 @@ export const updateBlog= async (req, res) =>{
         if (req.body.description) {
 			blog.description = req.body.description
 		}
+        if(req.body.photo){
+            if (req.file) {
+                req.body.photo = await fileUpload(req);
+            }
+            blog.photo=req.body.photo;
+        }
 
 		await blog.save()
 		res.send(blog)
@@ -86,5 +97,7 @@ export const getAllComment = async (req, res) => {
     const comment = blog.comments;
     res.status(200).json({ status: "success", data: comment})
 }
+
+
 
 

@@ -18,33 +18,10 @@ export const getAllMessage = async (req, res) => {
 }
 
 
-export const updateMessage= async (req, res) =>{
-	try {
-		const message = await Message.findOne({ _id: req.params.id })
-
-		if (req.body.Name) {
-			message.Name = req.body.Name
-		}
-
-		if (req.body.Email) {
-			message.Email = req.body.Email
-		}
-        if (req.body.message) {
-			message.message = req.body.message
-		}
-
-		await message.save()
-		res.send(message)
-	} catch {
-		res.status(404)
-		res.send({ error: "This message doesn't exist!" })
-	}
-}
-
 export const deleteMessage=async (req, res) => {
 	try {
 		await Message.deleteOne({ _id: req.params.id })
-		res.status(204).json({success: true, data: null})
+		res.status(202).json({success: true, data: null})
 	} catch {
 		res.status(404)
 		res.send({ error: "Message doesn't exist!" })

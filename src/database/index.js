@@ -1,6 +1,14 @@
+import 'dotenv/config'
 import mongoose from 'mongoose';
+const environment =process.env.NODE_ENV;
+//database URL according to environment
+const dev_db_url=process.env.DEVELOPMENT_DB;
+const prod_db_url=process.env.PRODUCTION_DB;
+const test_db_url=process.env.TEST_DB;
 
-mongoose.connect('mongodb+srv://placide:placide@cluster0.w6w0o.mongodb.net/capstone?retryWrites=true&w=majority', {
+const connectionUrl=(environment=='dev')? dev_db_url:(environment=='prod')?prod_db_url:test_db_url;
+
+mongoose.connect(connectionUrl, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
