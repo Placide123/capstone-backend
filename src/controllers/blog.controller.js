@@ -28,9 +28,9 @@ export const saveBlog = async (req, res) => {
             return res.status(409).send("Blog Already Exist. Please change the title");
         }
 	
-	console.log(blog);
+	//console.log(blog);
     const newBlog = new Blog(blog);
-	console.log(newBlog);
+	//console.log(newBlog);
     await newBlog.save();
     res.status(201).json({success: true, data: newBlog});
 	
