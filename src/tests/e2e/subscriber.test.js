@@ -12,7 +12,7 @@ describe("POST API /api/subscriber", () => {
     mongoose.connection.dropCollection("subscribers");
   });
   const subscriber = {
-    Email: "castlewitty9@gmail.com",
+    Email: "castlewitty9@gmail.com"
   };
   it("Should return Email validation", (done) => {
     const fakeMail = "rude.gmail.com";
@@ -64,7 +64,7 @@ describe("POST API /api/user", () => {
     lastName: "Twiringiyimana",
     email: "placidetwiringiyimana12345@gmail.com",
     role: "admin",
-    password: "placide",
+    password: "placide"
   };
   it("should successfully create an account and return 200", (done) => {
     chai
@@ -98,16 +98,16 @@ describe("POst API /api/user/login", () => {
   });
   const user = {
     email: "placidetwiringiyimana12345@gmail.com",
-    password: "placide",
+    password: "placide"
   };
   const user1 = {
     email: "placidetwiringiyimana@gmail.com",
-    password: "123",
+    password: "123"
   };
   const messages = {
     Name: "Twiringiyimana",
     Email: "castlewitty9@gmail.com",
-    message: "hello beautiful people",
+    message: "hello beautiful people"
   };
   it("it should successfully login and return 200", (done) => {
     chai

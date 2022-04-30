@@ -19,12 +19,12 @@ describe("POST API /api/user", () => {
     lastName: "Twiringiyimana",
     email: "placidetwiringiyimana12345@gmail.com",
     role: "admin",
-    password: "placide",
+    password: "placide"
   };
   it("should successfully create an account and return 200", (done) => {
     chai
       .request(app)
-      .post("/api/user")
+      .post("/api/user/")
       .send(user)
       .end((err, res) => {
         if (err) return done(err);
@@ -38,7 +38,7 @@ describe("POST API /api/user", () => {
     const oldUser = user.email;
     chai
       .request(app)
-      .post("/api/user")
+      .post("/api/user/")
       .send(user)
       .end((err, res) => {
         if (oldUser) return done(err);
@@ -59,16 +59,16 @@ describe("POst API /api/user/login", () => {
   })
   const user = {
     email: "placidetwiringiyimana1234@gmail.com",
-    password: "placide",
+    password: "placide"
   };
   const user1 = {
     email: "placidetwiringiyimana@gmail.com",
-    password: "123",
+    password: "123"
   };
   const messages = {
     Name: "Twiringiyimana",
     Email: "castlewitty9@gmail.com",
-    message: "hello beautiful people",
+    message: "hello beautiful people"
   };
   let token = "";
   it("it should successfully login and return 200", (done) => {
