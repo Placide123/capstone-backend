@@ -1,47 +1,65 @@
-version: 2.1
-orbs:
-  coveralls: coveralls/coveralls@1.0.4
-jobs:
-  build:
-    docker:
-      - image: circleci/node:10.16.0
-    working_directory: ~/project-api
-    environment:
-      NODE_ENV: TEST_DB
-      DATABASE_URL: process.env.TEST_DB;
-    steps:
-      - checkout
-      - run: npm install
-      # - run: npm test
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
-      - run:
-          name: install-npm-wee
-          command: npm install
-      - save_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
-          paths:
-            - ./node_modules
-      - run: # run tests
-          name: test
-          command: npm run test
-      - run: # run code coverage report
-          name: code-coverage
-          command: npm run coverage
-      - coveralls/upload
-      - store_artifacts: # special step to save test results as as artifact
-          # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
-          path: test-results
-          prefix: tests
-      - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
-          path: coverage
-          prefix: coverage
-      - store_test_results: # for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
-          path: test-results
-      - run: # test what branch we're on.
-          name: "What branch am I on?"
-          command: echo ${main}
-notify:
-  webhooks:
-    - url: https://coveralls.io/webhook?repo_token=${process.env.COVERALLS_REPO_TOKEN}
+name: CI
 
+on:
+
+  push:
+
+    branches: [ main ]
+
+  pull_request:
+
+    branches: [ main ]
+
+
+
+
+jobs:
+
+  build:
+
+    name: Running tests
+
+    runs-on: ubuntu-latest
+
+
+
+
+    strategy:
+
+      matrix:
+
+        node-version: [16.x]
+
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    env:
+
+      TOKEN_KEY: ${{ secrets.TOKEN_KEY }}
+
+      NODE_ENV: ${{ secrets.NODE_ENV }}
+
+      PORT: ${{ secrets.PORT }}
+
+      TEST_DB: ${{ secrets.TEST_DB }}
+
+    steps:
+
+    - uses: actions/checkout@v2
+
+    - name: Use Node.js ${{ matrix.node-version }}
+
+      uses: actions/setup-node@v2
+
+      with:
+
+        node-version: ${{ matrix.node-version }}
+
+        cache: 'npm'
+
+    - name: Install
+
+      run: npm install -f
+
+    - name: Test
+
+      run: npm test
