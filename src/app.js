@@ -9,12 +9,16 @@ import messageRoutes from './routes/message.route';
 import blogRoutes from './routes/blog.route';
 import subscriberRoutes from './routes/subscriber.route';
 import userRoutes from './routes/signup.route';
-import ('./prod')(server);
+import helmet from "helmet";
+import compression from "compression";
+
 const server = express();
 server.get('/', (req, res) => {
     res.status(200).json({ success: true, message: "You successfully landed on our Endpoint" })
 });
 server.use(express.json());
+server.use(helmet());
+server.use(compression());
 server.use('/api/message', messageRoutes);
 server.use('/api/blog', blogRoutes);
 server.use('/api/subscriber/',subscriberRoutes);
