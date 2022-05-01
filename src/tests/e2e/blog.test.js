@@ -22,7 +22,7 @@ describe("POST API /api/user", () => {
   it("should successfully create an account and return 200", (done) => {
     chai
       .request(app)
-      .post("/api/user/")
+      .post("/api/user")
       .send(user)
       .end((err, res) => {
         if (err) return done(err);
@@ -35,7 +35,7 @@ describe("POST API /api/user", () => {
     const oldUser = user.email;
     chai
       .request(app)
-      .post("/api/user/")
+      .post("/api/user")
       .send(user)
       .end((err, res) => {
         if (oldUser) return done(err);
@@ -45,7 +45,7 @@ describe("POST API /api/user", () => {
   });
 });
 
-describe("POst API /api/user/login", () => {
+describe("post API /api/user/login", () => {
   beforeEach(() => {
     mongoose.connection.dropCollection("login");
   });
@@ -100,7 +100,7 @@ describe("POst API /api/user/login", () => {
     it("it should successfully create blog and return 201", (done) => {
       chai
         .request(app)
-        .post("/api/blog/save/")
+        .post("/api/blog/save")
         .set("Authorization", `Bearer ${token}`)
         .send(blog)
         .end((err, res) => {
