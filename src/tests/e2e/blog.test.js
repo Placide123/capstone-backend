@@ -132,7 +132,7 @@ describe("post API /api/user/login", () => {
       const oldBlog = blog.title;
       chai
         .request(app)
-        .post("/api/user")
+        .post("/api/blog/save")
         .send(blog)
         .end((err, res) => {
           if (oldBlog) return done(err);
