@@ -6,10 +6,7 @@ import "dotenv/config";
 chai.use(chaiHttp);
 
 describe("POST API /api/user", () => {
-  beforeEach(() => {
-    mongoose.connection.dropCollection("users");
-  });
-  afterEach(() => {
+  before(() => {
     mongoose.connection.dropCollection("users");
   });
   const user = {
@@ -46,19 +43,12 @@ describe("POST API /api/user", () => {
 });
 
 describe("post API /api/user/login", () => {
-  beforeEach(() => {
-    mongoose.connection.dropCollection("login");
-  });
-  afterEach(() => {
+  before(() => {
     mongoose.connection.dropCollection("login");
   });
   const user = {
     email: "placidetwiringiyimana12345@gmail.com",
     password: "placide"
-  };
-  const user1 = {
-    email: "placidetwiringiyimana@gmail.com",
-    password: "123"
   };
 
   let token = "";
@@ -79,6 +69,10 @@ describe("post API /api/user/login", () => {
   });
 
   it("should denie it because of invalid credentials", (done) => {
+    const user1 = {
+      email: "placidetwiringiyimana@gmail.com",
+      password: "123"
+    };
     chai
       .request(app)
       .post("/api/user/login")
@@ -91,6 +85,9 @@ describe("post API /api/user/login", () => {
   });
 
   describe("POST API /api/blog/save", () => {
+    before(() => {
+      mongoose.connection.dropCollection("blogs");
+    });
     const blog = {
       title: "ATLP RWANDA",
       author: "placidetwiringiyimana",
@@ -111,6 +108,40 @@ describe("post API /api/user/login", () => {
           return done();
         });
     });
+
+    it("Should return 400 when your data is not valid", (done) => {
+      const fakeBlog = {
+        title: "",
+        author: "placidetwiringiyimana",
+        description: "Andela Technical",
+        photo: "Photo"
+      };
+      chai
+        .request(app)
+        .post("/api/blog/save")
+        .send(fakeBlog)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res).to.have.status(400);
+          expect(res.body).to.have.property("message");
+          return done();
+        });
+    });
+
+    it("Should return 409 when title of blog exists", (done) => {
+      const oldBlog = blog.title;
+      chai
+        .request(app)
+        .post("/api/user")
+        .send(blog)
+        .end((err, res) => {
+          if (oldBlog) return done(err);
+          expect(res).to.have.status(409);
+          return done();
+        });
+    });
+
+
   });
 
   describe("GET API /api/blog/get", () => {
@@ -163,6 +194,9 @@ describe("post API /api/user/login", () => {
   });
 
   describe("GET API /api/blog/:id/", () => {
+    before(() => {
+      mongoose.connection.dropCollection("posts");
+    });
   
     const post = {
       title: "ATLP RWANDA",
@@ -171,10 +205,8 @@ describe("post API /api/user/login", () => {
       photo: "Photo"
     };
     let postId;
-    before(() => {
-      mongoose.connection.dropCollection("posts");
-    });
-    it("should get all comment on blogby id", (done) => {
+
+    it("should get all comment on blog by id", (done) => {
       chai
         .request(app)
         .post("/api/blog/save")

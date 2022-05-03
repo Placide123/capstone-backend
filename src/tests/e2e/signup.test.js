@@ -5,19 +5,16 @@ import mongoose from "mongoose";
 import "dotenv/config"
 chai.use(chaiHttp);
 
-
+let token = "";
 
 describe("POST API /api/user", () => {
-  beforeEach(() => {
+  before(() => {
     mongoose.connection.dropCollection("users");
-  });
-  afterEach(()=>{
-    mongoose.connection.dropCollection("users"); 
   });
   const user = {
     firstName: "placide",
     lastName: "Twiringiyimana",
-    email: "placidetwiringiyimana12345@gmail.com",
+    email: "placidetwiringiyimana123456@gmail.com",
     role: "admin",
     password: "placide"
   };
@@ -50,27 +47,15 @@ describe("POST API /api/user", () => {
 
 describe("POst API /api/user/login", () => {
 
-  
-  beforeEach(() => {
+  before(() => {
     mongoose.connection.dropCollection("login");
   });
-  afterEach(()=>{
-    mongoose.connection.dropCollection("login"); 
-  })
+
   const user = {
-    email: "placidetwiringiyimana1234@gmail.com",
+    email: "placidetwiringiyimana123456@gmail.com",
     password: "placide"
-  };
-  const user1 = {
-    email: "placidetwiringiyimana@gmail.com",
-    password: "123"
-  };
-  const messages = {
-    Name: "Twiringiyimana",
-    Email: "castlewitty9@gmail.com",
-    message: "hello beautiful people"
-  };
-  let token = "";
+  }; 
+
   it("it should successfully login and return 200", (done) => {
     chai
       .request(app)
@@ -88,6 +73,10 @@ describe("POst API /api/user/login", () => {
   });
 
   it("should denie it because of invalid credentials", (done) => {
+    const user1 = {
+      email: "placidetwiringiyimana@gmail.com",
+      password: "123"
+    };
     chai
       .request(app)
       .post("/api/user/login/")
@@ -95,7 +84,58 @@ describe("POst API /api/user/login", () => {
       .end((err, res) => {
         if (err) return done(err);
         expect(res).to.have.status(400);
+        expect(res.body).to.have.property("message");
         return done();
       });
   });
+
+  describe("GET API /api/user/get", () => {
+    it("Should return all list of user who are registered", (done) => {
+      chai
+        .request(app)
+        .get("/api/user/get")
+        .set("Authorization", `Bearer ${token}`)
+        .send()
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res).to.have.status(200);
+          expect(res.body).to.have.property("success");
+          expect(res.body).to.have.property("data");
+          return done();
+        });
+    });
+  });
+
+
+  
+  describe("delete api /api/user/delete/",()=>{
+    const userId = "1229b52ca50601182da72457";
+      it("Should delete a user according to id",(done)=>{
+          chai
+          .request(app)
+          .delete("/api/user/delete/"+userId)
+          .set("Authorization", `Bearer ${token}`)
+          .send()
+          .end((err,res)=>{
+              if(err) return done(err);
+              expect(res).to.have.status(202);
+              expect(res.body).to.have.property("success");
+			        expect(res.body).to.have.property("data");
+              return done();
+          })
+      })
+     it("should return 404 when a user not found",(done)=>{
+        const fakeUserId = "1229b52ca50601182fgghjh";
+        chai
+        .request(app)
+        .delete("/api/user/delete/"+fakeUserId)
+        .set("Authorization", `Bearer ${token}`)
+        .send()
+        .end((err,res)=>{
+            if(err) return done(err);
+            expect(res).to.have.status(404);
+            return done();
+        })
+     })
+  })
 });

@@ -29,6 +29,23 @@ describe("POST API /api", () => {
         return done();
       });
   });
+  it("Should return Message validation", (done) => {
+    const fakeMessages = {
+      Name: "",
+      Email: "castlewitty9@gmail.com",
+      message: "hello beautiful people"
+    };
+    chai
+      .request(app)
+      .post("/api/message/")
+      .send(fakeMessages)
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res).to.have.status([400]);
+        expect(res.body).to.have.property("message");
+        return done();
+      });
+  });
 });
 describe('POST API /api/user', () => {
     before(() => {
@@ -108,9 +125,9 @@ describe("POst API /api/user/login", () => {
         if (err) return done(err);
         token = res.body.token;
         expect(res.status).to.be.equal(200);
-        // expect(res.body).to.have.property("success");
-				// expect(res.body).to.have.property("message");
-        // expect(res.body).to.have.property("token");
+        expect(res.body).to.have.property("success");
+				expect(res.body).to.have.property("message");
+        expect(res.body).to.have.property("token");
         return done();
       });
 
@@ -131,7 +148,40 @@ describe("POst API /api/user/login", () => {
             return done();
           });
       });
+      
     });
+
+    describe("delete api /api/message",()=>{
+      const messageId = "1229b52ca50601182da72457";
+        it("Should delete a user according to id",(done)=>{
+            chai
+            .request(app)
+            .delete("/api/message/"+messageId)
+            .set("Authorization", `Bearer ${token}`)
+            .send()
+            .end((err,res)=>{
+                if(err) return done(err);
+                expect(res).to.have.status(202);
+                expect(res.body).to.have.property("success");
+            expect(res.body).to.have.property("data");
+                return done();
+            })
+        })
+       it("should return 404 when subscriber not found",(done)=>{
+          const fakeId = "1229b52ca50601182fgghjh";
+          chai
+          .request(app)
+          .delete("/api/message/"+fakeId)
+          .set("Authorization", `Bearer ${token}`)
+          .send()
+          .end((err,res)=>{
+              if(err) return done(err);
+              expect(res).to.have.status(404);
+              return done();
+          })
+  
+       })
+    })
     
   });
 });
