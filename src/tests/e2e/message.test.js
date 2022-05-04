@@ -75,7 +75,6 @@ describe('POST API /api/user', () => {
         chai.request(app).post('/api/user')
             .send(user)
             .end((err, res) => {
-                
                 if (oldUser) return done(err);
                 expect(res.status).to.have.status(409)
                 return done();
