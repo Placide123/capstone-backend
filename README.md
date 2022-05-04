@@ -16,8 +16,8 @@ To use this app you set your environment with this tools
 
 ## How to run my app
 
--clone the [repository].
--install modules by using npm
+- clone the [repository].
+- install modules by using npm
 ```
 npm install
 
@@ -25,8 +25,8 @@ npm install
 
 ## Resources used
 
--JOI for Validation [JOI](joi.dev)
--JSON Web token [jwt](https://jwt.io/)
+- JOI for Validation [JOI](joi.dev)
+- JSON Web token [jwt](https://jwt.io/)
 
 ## Running Application
 

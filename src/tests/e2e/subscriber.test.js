@@ -12,7 +12,7 @@ describe("POST API /api/subscriber", () => {
     mongoose.connection.dropCollection("subscribers");
   });
   const subscriber = {
-    Email: "castlewitty9@gmail.com"
+    Email: "castlewitty10@gmail.com"
   };
   it("Should return Email validation", (done) => {
     const fakeMail = "rude.gmail.com";
