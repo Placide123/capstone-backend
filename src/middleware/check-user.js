@@ -14,7 +14,9 @@ export const checkAdminAuth = (req, res, next) => {
 	const bearerToken = req.headers.authorization;
 	if (bearerToken) {
 		const token = bearerToken.split(" ")[1];
+		console.log(token);
 		const payload = decodeToken(token);
+		console.log(payload)
         
 		if (payload) {
 			if (payload?.role == "admin") return next();

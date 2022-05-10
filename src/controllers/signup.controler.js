@@ -54,7 +54,7 @@ export const login = async (req, res)=>{
  
      }
     
-     const token = signToken(JSON.stringify({ _id, firstName, lastName, role, email: user.email }));
+     const token = signToken(JSON.stringify({ _id, firstName, lastName, role, email}));
      return res.status(200).json({ success: true, message: "successfully logged in", data: userdata, token })
     }
 

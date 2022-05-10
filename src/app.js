@@ -13,6 +13,7 @@ import helmet from "helmet";
 import compression from "compression";
 
 const server = express();
+server.use(cors());
 server.get('/', (req, res) => {
     res.status(200).json({ success: true, message: "You successfully landed on our Endpoint" })
 });
@@ -21,9 +22,9 @@ server.use(helmet());
 server.use(compression());
 server.use('/api/message', messageRoutes);
 server.use('/api/blog', blogRoutes);
-server.use('/api/subscriber/',subscriberRoutes);
+server.use('/api/subscriber',subscriberRoutes);
 server.use('/api/user',userRoutes)
-server.use(cors());
+
 server.use(morgan("dev"));
 server.use("/api/", userRoutes, subscriberRoutes, blogRoutes, messageRoutes);
 server.use("/api-documentation", swaggerUI.serve, swaggerUI.setup(swaggerDoc, { explorer: true }));

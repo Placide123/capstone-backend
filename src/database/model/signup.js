@@ -6,7 +6,7 @@ lastName: {type:String, default: null},
 email:{type:String, unique:true},
 role:{type:String},
 password:{type:String},
-token:{type:String},
+
 
 });
 
